@@ -130,10 +130,13 @@ my_catalan_memo :: Integer -> Integer
 my_catalan_memo n = my_cat_memo n n
 
 my_cat_memo :: Integer -> Integer -> Integer
-my_cat_memo = undefined
+my_cat_memo = memoize2 my_cat
 
 my_cat :: Integer -> Integer -> Integer
-my_cat = undefined
+my_cat _ 0 = 1
+my_cat m n
+  | m == n = my_cat_memo m (n - 1)
+  | otherwise = my_cat_memo m (n - 1) + my_cat_memo (m - 1) n
 
 ----------------------------------------------------------------
 
@@ -147,10 +150,14 @@ my_catalan2 n = sum (zipWith (*) xs ys)
 -}
 
 my_catalan2_memo :: Integer -> Integer
-my_catalan2_memo = undefined
+my_catalan2_memo = memoize my_catalan2
 
 my_catalan2 :: Integer -> Integer
-my_catalan2 = undefined
+my_catalan2 0 = 1
+my_catalan2 n = sum (zipWith (*) xs ys)
+  where
+    xs = map my_catalan2_memo [0..(n-1)]
+    ys = map my_catalan2_memo [(n-1),(n-2)..0]
 
 ----------------------------------------------------------------
 
@@ -164,7 +171,11 @@ my_coin n (c:cs)
 -}
 
 my_coin_memo :: Integer -> [Integer] -> Integer
-my_coin_memo = undefined
+my_coin_memo = memoize2 my_coin
 
 my_coin :: Integer -> [Integer] -> Integer
-my_coin = undefined
+my_coin 0 _ = 1
+my_coin _ [] = 0
+my_coin n (c:cs)
+  | n < 0 = 0
+  | otherwise = my_coin_memo (n - c) (c:cs) + my_coin_memo n cs

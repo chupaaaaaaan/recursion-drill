@@ -54,19 +54,29 @@ my_divide m n
   | otherwise = my_divide (m - n) n + 1
 
 my_gt :: Integer -> Integer -> Bool
-my_gt = undefined
+my_gt 0 _ = False
+my_gt _ 0 = True
+my_gt m n = my_gt (m - 1) (n - 1)
 
 my_gteq :: Integer -> Integer -> Bool
-my_gteq = undefined
+my_gteq _ 0 = True
+my_gteq 0 _ = False
+my_gteq m n = my_gteq (m - 1) (n - 1)
 
 my_odd :: Integer -> Bool
-my_odd = undefined
+my_odd 0 = False
+my_odd 1 = True
+my_odd n = my_odd (n - 2)
 
 my_remainder :: Integer -> Integer -> Integer
-my_remainder = undefined
+my_remainder m n
+  | m < n = m
+  | otherwise = my_remainder (m - n) n
 
 my_divide_iter :: Integer -> Integer -> Integer
-my_divide_iter x y = iter x y undefined
+my_divide_iter x y = iter x y 0
   where
     iter :: Integer -> Integer -> Integer -> Integer
-    iter = undefined
+    iter m n acc
+      | m < n = acc
+      | otherwise = iter (m - n) n (acc + 1)

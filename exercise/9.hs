@@ -70,31 +70,47 @@ my_map_iter g as = reverse (iter g as [])
 
 my_filter :: (a -> Bool) -> [a] -> [a]
 my_filter _ []     = []
-my_filter p (x:xs) = undefined
+my_filter p (x:xs)
+  | p x = x : my_filter p xs
+  | otherwise = my_filter p xs
 
 ----------------------------------------------------------------
 
 my_append :: [a] -> [a] -> [a]
 my_append []     ys = ys
-my_append (x:xs) ys = undefined
+my_append (x:xs) ys = x : my_append xs ys
 
 my_concat :: [[a]] -> [a]
 my_concat []       = []
-my_concat (xs:xss) = undefined
+my_concat (xs:xss) = my_append xs $ my_concat xss
 
 ----------------------------------------------------------------
 
 my_intersperse :: a -> [a] -> [a]
-my_intersperse = undefined
+my_intersperse _ [] = []
+my_intersperse _ [x] = [x]
+my_intersperse c (x:xs) = x : c : my_intersperse c xs
 
 ----------------------------------------------------------------
 
 my_break :: (a -> Bool) -> [a] -> ([a], [a])
 my_break _ [] = ([],[])
-my_break p (x:xs) = undefined
+my_break p (x:xs) = (iter1 (x:xs),iter2 (x:xs))
+  where
+    iter1 [] = []
+    iter1 (y:ys)
+      | p y = []
+      | otherwise = y : iter1 ys
+    iter2 [] = []
+    iter2 (y:ys)
+      | p y = y:ys
+      | otherwise = iter2 ys
 
 ----------------------------------------------------------------
 
 my_group :: Eq a => [a] -> [[a]]
 my_group []     = []
-my_group (x:xs) = undefined
+my_group (x:xs) = ys : my_group zs
+  where
+    ys = fst $ my_break (/=x) (x:xs)
+    zs = snd $ my_break (/=x) (x:xs)

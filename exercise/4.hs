@@ -42,13 +42,23 @@ my_mul_n m n
   | otherwise    = my_mul_n m (my_minus1_n n) `my_plus_n` m
 
 my_minus_n :: Nat -> Nat -> Nat
-my_minus_n = undefined
+my_minus_n m n
+  | my_isZero_n n = m
+  | otherwise = my_minus1_n (m `my_minus_n` my_minus1_n n)
 
 my_lt_n :: Nat -> Nat -> Bool
-my_lt_n = undefined
+my_lt_n m n
+  | my_isZero_n n = False
+  | my_isZero_n m = True
+  | otherwise = my_lt_n (my_minus1_n m) (my_minus1_n n)
 
 my_divide_n :: Nat -> Nat -> Nat
-my_divide_n = undefined
+my_divide_n m n
+  | my_lt_n m n = my_to_n 0
+  | otherwise = my_plus1_n (my_minus_n m n `my_divide_n` n)
 
 my_remainder_n :: Nat -> Nat -> Nat
-my_remainder_n = undefined
+my_remainder_n m n
+  | my_lt_n m n = m
+  | otherwise = my_minus_n m n `my_remainder_n` n
+
